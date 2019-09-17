@@ -41,8 +41,9 @@ import random
 from std_msgs.msg import String
 
 def publisher():
+    """Publishes index and quality of random turtle at 5hz"""
     pub = rospy.Publisher('quality', String, queue_size=10)
-    rospy.init_node('talker', anonymous=True)
+    rospy.init_node('turtle_publisher')
     rate = rospy.Rate(5) # 5hz
     i = 0
     while not rospy.is_shutdown():
