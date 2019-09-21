@@ -1,49 +1,25 @@
 #include "ros/ros.h"
-#include "std_msgs/String.h"
-#include <iostream>
-#include <string>
-#include <vector>
+#include "turtle/Quality.h"
 
-using namespace std;
-/**
- * Receipt of turtle quality
- */
-
-/**
- * Tokenize strings using a delimiter character
-**/
-void tokenize(std::string const &str, const char delim, std::vector<std::string> &out){
-
-    size_t start;
-    size_t end = 0;
-
-    while ((start = str.find_first_not_of(delim, end)) != std::string::npos){
-	end = str.find(delim, start);
-	out.push_back(str.substr(start, end - start));
-    }
-}
-
-void printQuality(const std_msgs::String::ConstPtr& msg){
-    std::string const message = msg->data;
-    const char delim = ',';
-    std::vector<std::string> out;
-    tokenize(message, delim, out);
-    int quality = std::stoi(out[1]);
+void printQuality(const turtle::Quality::ConstPtr &msg){
+    int idx = msg->index;
+    int quality = msg->value;
     if (quality>=7){
-        ROS_INFO("Index: %s", out[0].c_str());
+        ROS_INFO("Index: %d", idx);
         ROS_INFO("Quality of turtle: %d", quality);
     }
     else
     {
-        ROS_INFO("Index: %s", out[0].c_str());
-	ROS_INFO("trash turtle");
+        ROS_INFO("Index: %d", idx);
+	ROS_INFO("trash");
     }
 }
 
 int main(int argc, char **argv){
+    ROS_INFO("Running subscriber");
     ros::init(argc, argv, "listener");
     ros::NodeHandle n;
-    ros::Subscriber sub = n.subscribe("quality", 1000, printQuality);
+    ros::Subscriber sub = n.subscribe("/quality", 10, printQuality);
     ros::spin();
 
     return 0;
